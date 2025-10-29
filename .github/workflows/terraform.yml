@@ -27,7 +27,7 @@ jobs:
       # Step 3: Authenticate to GCP
       - name: Configure GCP Credentials
         run: |
-          echo "${{ secrets.GCP_CREDENTIALS }}" > /tmp/account.json
+          echo "${{ secrets.GCP_CREDENTIALS }}" | base64 --decode > /tmp/account.json
           export GOOGLE_APPLICATION_CREDENTIALS="/tmp/account.json"
           gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
           gcloud config set project my-demo-project-476610
