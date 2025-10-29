@@ -1,0 +1,54 @@
+name: Terraform CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform_plan:
+    name: Terraform Format, Validate & Plan
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.5
+
+      # Step 3: Authenticate to GCP
+      - name: Configure GCP Credentials
+        run: |
+          echo "${{ secrets.GCP_CREDENTIALS }}" | base64 --decode > /tmp/account.json
+          export GOOGLE_APPLICATION_CREDENTIALS="/tmp/account.json"
+          gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+          gcloud config set project my-demo-project-476610
+
+      # Step 4: Initialize Terraform
+      - name: Terraform Init
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/account.json
+        run: terraform init
+
+      # Step 5: Check Terraform format
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      # Step 6: Validate Terraform configuration
+      - name: Terraform Validate
+        run: terraform validate
+
+      # Step 7: Terraform Plan (only for PRs)
+      - name: Terraform Plan
+        if: github.event_name == 'pull_request'
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/account.json
+        run: terraform plan -no-color
