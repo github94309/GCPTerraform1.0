@@ -1,0 +1,63 @@
+# Terraform
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.tfplan
+*.tfplan
+
+# Sensitive variable files and credentials
+*.tfvars
+*.tfvars.json
+secret.tfvars
+credentials.json
+google-credentials.json
+gcloud-key.json
+service-account-*.json
+*.pem
+*.key
+
+# Terraform plugin cache (optional)
+# If you vendor providers locally, ignore the plugin dir
+.terraform/plugins/
+
+# CLI/IDE / Editor
+.vscode/
+.idea/
+*.iml
+
+# Windows
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+
+# Python virtual environments
+venv/
+env/
+.venv/
+
+# Node
+node_modules/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.bak
+
+# Backup and local project files
+*.orig
+
+# Ignore local terraform override/backend files that may contain secrets
+backend.tfvars
+local.tfvars
+
+# Keep the lockfile committed by default; uncomment to ignore if you prefer
+# .terraform.lock.hcl
