@@ -1,1 +1,1 @@
-project_id       = "my-demo-project-476610"
+project_id = "my-demo-project-476610"
