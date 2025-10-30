@@ -11,7 +11,8 @@ resource "random_id" "bucket_suffix" {
 
 # Create a Compute Engine VM
 resource "google_compute_instance" "vm_instance" {
-  name         = var.vm_name
+ count       = 3
+ name         = var.vm_name
   machine_type = var.machine_type
   zone         = var.zone
 
@@ -31,9 +32,14 @@ resource "google_compute_instance" "vm_instance" {
   tags = ["web", "dev"]
 }
 
-# Create a Google Cloud Storage bucket
+#Create two Google Cloud Storage buckets
 resource "google_storage_bucket" "app_bucket" {
-  name          = "${var.bucket_name}-${random_id.bucket_suffix.hex}"
+  count         = 2 
+  
+  # Ensure the name is unique by including the count.index
+  # e.g., bucket-app-0-abcd and bucket-app-1-abcd
+  name          = "${var.bucket_name}-${count.index}-${random_id.bucket_suffix.hex}"
+  
   location      = var.region
   storage_class = "STANDARD"
 
@@ -56,4 +62,5 @@ resource "google_compute_disk" "app_disk" {
 resource "google_compute_attached_disk" "vm_disk_attachment" {
   disk     = google_compute_disk.app_disk.id
   instance = google_compute_instance.vm_instance.id
+
 }
